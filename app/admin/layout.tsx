@@ -1,4 +1,4 @@
-import { CalendarDays, FolderKanban, LayoutDashboard, Settings, Users, Wrench } from 'lucide-react';
+import { Bot, CalendarDays, FolderKanban, LayoutDashboard, Settings, Users, Wrench } from 'lucide-react';
 import { requireAdmin } from '@/lib/auth';
 import { Shell } from '@/components/Shell';
 
@@ -11,6 +11,7 @@ const nav = [
   { href: '/admin/categories', label: 'Xizmat turlari', icon: <FolderKanban className={I} /> },
   { href: '/admin/bookings', label: 'Buyurtmalar', icon: <CalendarDays className={I} /> },
   { href: '/admin/clients', label: 'Mijozlar', icon: <Users className={I} /> },
+  { href: '/admin/bot', label: 'Bot nazorati', icon: <Bot className={I} /> },
   { href: '/admin/settings', label: 'Sozlamalar', icon: <Settings className={I} /> },
 ];
 

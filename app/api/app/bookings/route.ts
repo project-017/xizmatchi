@@ -1,6 +1,7 @@
 import { db } from '@/lib/supabase';
 import { getTgClient, json, unauthorized } from '@/lib/tg-client';
-import { notify, esc } from '@/lib/telegram';
+import { notify, notifyAdmin, esc } from '@/lib/telegram';
+import { appUrl as getAppUrl } from '@/lib/settings';
 import { fmtDateTime } from '@/lib/format';
 
 export const dynamic = 'force-dynamic';
@@ -59,7 +60,7 @@ export async function POST(req: Request) {
 
   await db().from('clients').update({ phone }).eq('id', client.id);
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+  const appUrl = await getAppUrl();
   await notify(
     provider.telegram_chat_id,
     `🆕 <b>Yangi buyurtma!</b>\n\n` +
@@ -67,6 +68,10 @@ export async function POST(req: Request) {
       `📞 ${esc(phone)}\n🕒 ${fmtDateTime(slot.starts_at)}\n📍 ${esc(address)}` +
       (note ? `\n📝 ${esc(note)}` : '') +
       (appUrl ? `\n\nQabul qilish: ${appUrl}/panel` : ''),
+  );
+
+  await notifyAdmin(
+    `🆕 <b>Yangi buyurtma</b>\n👷 ${esc(provider.full_name)}\n👤 ${esc(client.first_name)} · ${esc(phone)}\n🕒 ${fmtDateTime(slot.starts_at)}\n📍 ${esc(address)}`,
   );
 
   return json({ booking });

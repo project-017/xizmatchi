@@ -114,12 +114,20 @@ drop trigger if exists bookings_stats on bookings;
 create trigger bookings_stats after insert or update or delete on bookings
   for each row execute function refresh_provider_stats();
 
+-- ── Tizim sozlamalari (bot tokeni va h.k. — admin saytdan boshqariladi) ──
+create table if not exists app_settings (
+  key        text primary key,
+  value      text not null,
+  updated_at timestamptz not null default now()
+);
+
 -- ── Xavfsizlik: RLS yoqiladi, siyosat yo'q → faqat server (service_role) kira oladi ──
 alter table categories enable row level security;
 alter table providers  enable row level security;
 alter table clients    enable row level security;
 alter table slots      enable row level security;
 alter table bookings   enable row level security;
+alter table app_settings enable row level security;
 
 -- ── Boshlang'ich xizmat turlari ──
 insert into categories (name, slug, icon, color, sort) values

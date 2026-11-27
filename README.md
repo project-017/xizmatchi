@@ -19,7 +19,8 @@ Admin ham, usta ham bitta sahifadan kiradi: **`/login`**. Tizim kim kirganini o'
 - Xizmat turlari (kategoriyalar) qo'shish/tahrirlash — emoji, rang, tartib
 - Barcha buyurtmalarni ko'rish va holatini o'zgartirish
 - Mijozlar ro'yxati, bloklash
-- Sozlamalar: env tekshiruvi, Telegram botni bir tugma bilan ulash
+- **Bot nazorati**: tokenni qo'yib, mijoz botini bir tugma bilan ulash; holat monitoringi, /start matni va tavsiflarni tahrirlash, yangi buyurtmalar haqida adminga xabar, barcha mijozlarga e'lon yuborish
+- Sozlamalar: tizim holati tekshiruvi
 
 ### Usta nima qila oladi
 - Yangi buyurtmalarni ko'rish → **Qabul qilish / Rad etish → Yo'ldaman → Bajarildi**
@@ -42,11 +43,11 @@ Admin ham, usta ham bitta sahifadan kiradi: **`/login`**. Tizim kim kirganini o'
 ### 1. Supabase
 1. [supabase.com](https://supabase.com) → **New project**
 2. **SQL Editor** → `supabase/schema.sql` faylining hammasini joylab **Run** bosing (jadvallar + 14 ta xizmat turi yaratiladi)
+   - `schema.sql` ni oldinroq ishga tushirgan bo'lsangiz, `supabase/migrations/002_app_settings.sql` ni ham bir marta **Run** qiling
 3. **Project Settings → API** dan oling: `Project URL` va `service_role` kaliti
 
 ### 2. Telegram bot
-1. [@BotFather](https://t.me/BotFather) → `/newbot` → token oling
-2. (Ixtiyoriy) `/newapp` orqali Mini App ham yaratish mumkin — URL: `https://SIZNING-DOMEN/app`
+Bot tokeni `.env` ga yozilmaydi — u keyinroq admin saytdagi **Bot nazorati** bo'limida kiritiladi (4-qadam).
 
 ### 3. Netlify
 1. [app.netlify.com](https://app.netlify.com) → GitHub bilan kiring
@@ -61,20 +62,21 @@ Admin ham, usta ham bitta sahifadan kiradi: **`/login`**. Tizim kim kirganini o'
 | `SUPABASE_SERVICE_ROLE_KEY` | service_role kaliti (**maxfiy**) |
 | `ADMIN_LOGIN` / `ADMIN_PASSWORD` | Admin login va kuchli parol |
 | `AUTH_SECRET` | Uzun tasodifiy satr (`openssl rand -hex 32`) |
-| `TELEGRAM_BOT_TOKEN` | BotFather tokeni |
-| `TELEGRAM_WEBHOOK_SECRET` | Istalgan so'z (A-Z, 0-9, `_`) |
-| `NEXT_PUBLIC_APP_URL` | `https://SAYT-NOMI.netlify.app` (oxirida `/` siz) |
 | `ALLOW_DEV_USER` | `false` |
 
 6. **Deploys → Trigger deploy → Deploy site** — env bilan qayta yig'iladi
 
-> 💡 Sayt nomini **Site configuration → Change site name** orqali o'zgartirish mumkin (masalan `xizmatchi` → `xizmatchi.netlify.app`). Nomni o'zgartirsangiz, `NEXT_PUBLIC_APP_URL` ni ham yangilab, qayta deploy qiling.
+> 💡 Sayt nomini **Site configuration → Change site name** orqali o'zgartirish mumkin (masalan `xizmatchi` → `xizmatchi.netlify.app`). Nomni o'zgartirsangiz, **Bot nazorati → Qayta sozlash** tugmasini bosing.
 >
 > 💡 Har safar GitHub'ga yangi kod push qilinganda Netlify o'zi avtomatik qayta deploy qiladi.
 
-### 4. Botni ulash
-Sayt ochilgach: `/login` → admin bilan kiring → **Sozlamalar → "Botni ulash"**.
-Bu webhook'ni, chatdagi **"Usta topish"** menyu tugmasini va `/start`, `/id` buyruqlarini o'rnatadi.
+### 4. Botni ulash (admin saytdan)
+1. Telegramda [@BotFather](https://t.me/BotFather) → `/newbot` → bot nomi va username (`..._bot`) → **tokenni nusxalang**
+2. Saytni **https** manzil orqali oching → `/login` → admin bilan kiring
+3. **Bot nazorati** → tokenni qo'ying → **Botni ulash**
+
+Avtomatik o'rnatiladi: webhook, chatdagi **"Usta topish"** menyu tugmasi, `/start` va `/id` buyruqlari, bot tavsifi.
+Shu bo'limda keyin: holatni kuzatish, matnlarni tahrirlash, admin xabarnomalari, barcha mijozlarga e'lon yuborish.
 
 ### 5. Birinchi usta
 Admin → **Ustalar → + Yangi usta** → ma'lumotlar, login, parol → ustaga login/parolni bering.

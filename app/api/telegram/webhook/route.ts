@@ -1,10 +1,11 @@
 import { tgApi, esc } from '@/lib/telegram';
+import { appUrl, getSettings, webhookSecret, DEFAULT_TEXTS } from '@/lib/settings';
 
 export const dynamic = 'force-dynamic';
 
-/** Bot webhook: /start → mini app tugmasi + foydalanuvchining Telegram ID'si */
+/** Mijoz boti webhook: /start → mini app tugmasi, /id → Telegram ID */
 export async function POST(req: Request) {
-  const secret = process.env.TELEGRAM_WEBHOOK_SECRET;
+  const secret = await webhookSecret();
   if (secret && req.headers.get('x-telegram-bot-api-secret-token') !== secret) {
     return new Response('forbidden', { status: 403 });
   }
@@ -12,19 +13,16 @@ export async function POST(req: Request) {
   const msg = update?.message;
   if (!msg?.chat?.id) return Response.json({ ok: true });
 
-  const url = process.env.NEXT_PUBLIC_APP_URL;
+  const [url, s] = await Promise.all([appUrl(), getSettings()]);
   const text: string = msg.text || '';
+  const button = url ? { inline_keyboard: [[{ text: `🛠 ${s.bot_menu_text || DEFAULT_TEXTS.menu}`, web_app: { url: `${url}/app` } }]] } : undefined;
 
   if (text.startsWith('/start') || text.startsWith('/app')) {
     await tgApi('sendMessage', {
       chat_id: msg.chat.id,
       parse_mode: 'HTML',
-      text:
-        `Assalomu alaykum, <b>${esc(msg.from?.first_name)}</b>! 👋\n\n` +
-        `<b>Xizmatchi</b> — uyingizga kerakli ustani bir necha bosishda chaqiring:\n` +
-        `🚰 santexnik, ⚡ elektrik, ❄️ konditsioner, 🎨 molyar va boshqalar.\n\n` +
-        `Quyidagi tugmani bosing 👇`,
-      reply_markup: url ? { inline_keyboard: [[{ text: '🛠 Usta topish', web_app: { url: `${url}/app` } }]] } : undefined,
+      text: (s.bot_welcome || DEFAULT_TEXTS.welcome).replaceAll('{name}', esc(msg.from?.first_name)),
+      reply_markup: button,
     });
   } else if (text.startsWith('/id')) {
     await tgApi('sendMessage', {
@@ -36,6 +34,7 @@ export async function POST(req: Request) {
     await tgApi('sendMessage', {
       chat_id: msg.chat.id,
       text: 'Buyruqlar:\n/start — ilovani ochish\n/id — Telegram ID raqamingiz',
+      reply_markup: button,
     });
   }
   return Response.json({ ok: true });

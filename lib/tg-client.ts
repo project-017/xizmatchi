@@ -1,12 +1,13 @@
 import 'server-only';
 import { db } from './supabase';
 import { validateInitData, type TgUser } from './telegram';
+import { botToken } from './settings';
 import type { Client } from './types';
 
 /** Mini app so'rovidan Telegram foydalanuvchini aniqlaydi va mijozni bazada yangilaydi */
 export async function getTgClient(req: Request): Promise<Client | null> {
   const initData = req.headers.get('x-telegram-init-data') || '';
-  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const token = await botToken();
   let user: TgUser | null = null;
   if (initData && token) user = validateInitData(initData, token);
   if (!user && process.env.ALLOW_DEV_USER === 'true') {
