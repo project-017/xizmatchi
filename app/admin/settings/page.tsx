@@ -31,7 +31,7 @@ export default function Settings() {
         <div className="card p-6">
           <h2 className="mb-1 font-bold">Telegram bot</h2>
           <p className="mb-5 text-sm text-slate-500">
-            Vercel'ga deploy qilgandan so'ng bir marta bosing: webhook, &quot;Usta topish&quot; menyu tugmasi va buyruqlar o'rnatiladi.
+            Netlify'ga deploy qilgandan so'ng bir marta bosing: webhook, &quot;Usta topish&quot; menyu tugmasi va buyruqlar o'rnatiladi.
           </p>
           <TelegramSetup />
           <div className="mt-6 text-sm text-slate-500">

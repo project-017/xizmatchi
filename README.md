@@ -2,7 +2,7 @@
 
 Uyga usta chaqirish tizimi: mijoz Telegram ichida xizmatni tanlaydi, ustaning bo'sh vaqtini ko'radi va band qiladi.
 
-**Stack:** Next.js 15 (Vercel) · Supabase (Postgres) · Tailwind CSS · Telegram WebApp
+**Stack:** Next.js 15 (Netlify) · Supabase (Postgres) · Tailwind CSS · Telegram WebApp
 
 ## 3 ta rol
 
@@ -48,10 +48,12 @@ Admin ham, usta ham bitta sahifadan kiradi: **`/login`**. Tizim kim kirganini o'
 1. [@BotFather](https://t.me/BotFather) → `/newbot` → token oling
 2. (Ixtiyoriy) `/newapp` orqali Mini App ham yaratish mumkin — URL: `https://SIZNING-DOMEN/app`
 
-### 3. GitHub + Vercel
-1. Bu papkani GitHub'ga push qiling
-2. [vercel.com](https://vercel.com) → **Add New → Project** → repozitoriyni tanlang
-3. **Environment Variables** ga `.env.example` dagi barcha o'zgaruvchilarni kiriting:
+### 3. Netlify
+1. [app.netlify.com](https://app.netlify.com) → GitHub bilan kiring
+2. **Add new project → Import an existing project → GitHub** → `xizmatchi` repozitoriyni tanlang
+3. Build sozlamalari `netlify.toml` dan avtomatik olinadi — hech narsani o'zgartirmang
+4. **Deploy** bosing. Birinchi deploy xato bilan tugashi mumkin (env hali yo'q) — bu normal
+5. **Site configuration → Environment variables → Add a variable** — quyidagilarni kiriting:
 
 | O'zgaruvchi | Qiymat |
 |---|---|
@@ -61,10 +63,14 @@ Admin ham, usta ham bitta sahifadan kiradi: **`/login`**. Tizim kim kirganini o'
 | `AUTH_SECRET` | Uzun tasodifiy satr (`openssl rand -hex 32`) |
 | `TELEGRAM_BOT_TOKEN` | BotFather tokeni |
 | `TELEGRAM_WEBHOOK_SECRET` | Istalgan so'z (A-Z, 0-9, `_`) |
-| `NEXT_PUBLIC_APP_URL` | `https://loyiha.vercel.app` (oxirida `/` siz) |
+| `NEXT_PUBLIC_APP_URL` | `https://SAYT-NOMI.netlify.app` (oxirida `/` siz) |
 | `ALLOW_DEV_USER` | `false` |
 
-4. **Deploy** bosing
+6. **Deploys → Trigger deploy → Deploy site** — env bilan qayta yig'iladi
+
+> 💡 Sayt nomini **Site configuration → Change site name** orqali o'zgartirish mumkin (masalan `xizmatchi` → `xizmatchi.netlify.app`). Nomni o'zgartirsangiz, `NEXT_PUBLIC_APP_URL` ni ham yangilab, qayta deploy qiling.
+>
+> 💡 Har safar GitHub'ga yangi kod push qilinganda Netlify o'zi avtomatik qayta deploy qiladi.
 
 ### 4. Botni ulash
 Sayt ochilgach: `/login` → admin bilan kiring → **Sozlamalar → "Botni ulash"**.
